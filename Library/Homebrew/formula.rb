@@ -17,6 +17,7 @@ class Formula
 
   attr_reader :name, :path, :homepage, :downloader
   attr_reader :stable, :bottle, :devel, :head, :active_spec
+  attr_reader :resources
 
   # The current working directory during builds and tests.
   # Will only be non-nil inside #stage and #test.
@@ -28,6 +29,7 @@ class Formula
     # If we got an explicit path, use that, else determine from the name
     @path = path.nil? ? self.class.path(name) : Pathname.new(path)
     @homepage = self.class.homepage
+    @resources = self.class.resources
 
     set_spec :stable
     set_spec :devel
@@ -740,6 +742,19 @@ class Formula
     def mirror val
       @stable ||= SoftwareSpec.new
       @stable.mirror(val)
+    end
+
+    # Holds any resources defined by this formula
+    def resources
+      @resources ||= Hash.new
+    end
+
+    # Defines a named resource using a SoftwareSpec style block
+    def resource res_name, &block
+      raise "Duplicate resource #{res_name}" if resources.has_key?(res_name)
+      res = SoftwareSpec.new
+      res.instance_eval(&block)
+      resources[res_name] = res
     end
 
     def dependencies
