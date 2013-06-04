@@ -17,7 +17,10 @@ class Apktool < Formula
 
   def install    
     libexec.install 'apktool.jar'
-    @resources['tools']
+
+    @resources['tools'].stage do
+      libexec.install 'aapt', 'apktool'
+    end
 
     ApktoolExecutables.new.brew do
       libexec.install 'aapt', 'apktool'

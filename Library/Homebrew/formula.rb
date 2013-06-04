@@ -1,3 +1,4 @@
+require 'resource'
 require 'download_strategy'
 require 'dependency_collector'
 require 'formula_support'
@@ -11,7 +12,7 @@ require 'build_environment'
 require 'build_options'
 
 
-class Formula
+class Formula < Resource
   include FileUtils
   extend BuildEnvironmentDSL
 
